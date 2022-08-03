@@ -5,9 +5,11 @@ but with a team-based twist.
 
 ## Basic Rules
 
-Every player is dealt 13 cards.
-Whoever starts a round will play any trick out of their hand.
-A trick has one of the following patterns:
+The base game requires four players. Each player is dealt 13 cards.
+Whoever is dealt the `3♠` starts the first hand.
+
+A player begins a given hand by playing any trick out of their hand.
+A trick must have one of the following patterns:
 
     - A single card
     - Two of a Kind
@@ -31,28 +33,32 @@ Suit order, from best to worst, is:
 `2`s are unique - instead of being the low card in the game, `2`s are the highest.
 Because of this, `2`s can only be played with other `2`s and cannot be part of a Run.
 
-If everyone after a player skips, that player "wins" the hand and gets to start
-the next round with a new trick. If that player is out of cards, the player
-with the most remaining cards begins the next trick.
+If everyone else skips after a player players, that player "wins" the hand
+and gets to start the next hand with a new trick.
+If that player is out of cards, the player with the most remaining cards
+begins the next trick.
 
 Since `2`s are the high card, `3♠` is the lowest card.
 Whoever, then, is dealt the `3♠` goes first to start the game.
 
-The first player to run out of cards wins, but the game is not over!
+The first player to run out of cards wins, but the round is not over!
 Each player will earn (or lose!) points based on the order in which they go out.
 
-Scoring: 1st (+3) 2nd (+1) 3rd (-1) 4th (-3)
+Scores are cumulative across rounds. Games are played until any player
+reaches a predefined threshold (usually 10 points).
+
+**Scoring:** 1st (+3) 2nd (+1) 3rd (-1) 4th (-3)
 
 ## Six Player Variant
 
 In a six player game, each player starts with 9 cards instead of 13.
-Two Jokers (a Red Joker and a Black Joker, represented as '☆'s)
+Two Jokers (a Red Joker and a Black Joker, represented as **☆**)
 are added to bring the total number of cards to 54.
-The Jokers are now the highest card in the game, better than `2`s.
+The Jokers are now the highest card in the game, beating `2`s.
 However, Jokers can _only_ be played solo - not as a pair, not as part of a run.
 `2`s can still only be played with other `2`s. The Red Joker can beat the Black Joker.
 
-Six-player Scoring: 1st (+3) 2nd (+2) 3rd (+1) 4th (-1) 5th (-2) 6th (-3)
+**Six-player Scoring:** 1st (+3) 2nd (+2) 3rd (+1) 4th (-1) 5th (-2) 6th (-3)
 
 ## Team Play
 
@@ -64,7 +70,7 @@ In a team game, before the game begins,
 each player gets one minute to memorize their hand.
 After one minute, each player will swap hands with their teammate,
 the player sitting across from them. Then, without communication, each player
-gets to trade _one card_ from their new hand back to their original hand
+gets to trade **one card** from their new hand back to their original hand
 (which their teammate now holds). Neither teammate can look at which card
 their teammate is trading before selecting a card to trade. Ideally, a player
 can use this opportunity to improve their teammate's hand.
@@ -72,17 +78,17 @@ can use this opportunity to improve their teammate's hand.
 Once trades are complete, play continues as normal with the player with the `3♠`
 going first. When a round ends, however, each player earns the _sum_ of their team's scores.
 For example, if one teammate finishes first and earns 3 points, and the other
-teammate finishes fourth and loses 1 point, both teammates will finish with 2 points.
+teammate finishes fourth and loses 1 point, **both** teammates will instead earn 2 points.
 
-After a game finishes, the teams change.
+After a round finishes, the teams change.
 Whoever finished first now pairs with whoever finished sixth,
 second pairs with fifth, and third pairs with fourth.
 
-### Tips and Tricks
+## Tips and Tricks
 
 - Since `2`s and Jokers cannot be part of a run, the best runs in the game end in `A♥`
 - A run must have _at least_ three cards in it, but can have up to 12
-- If you skip during a round, you can play if play returns to you - you do not have to skip again
+- If you skip during a round, you can still play if play returns to you - you do not have to skip again
 - If everyone skips after a player goes out in a **team game**, the _team_ with the most remaining cards goes next
   - The player in that team with the most cards goes first between them
 
