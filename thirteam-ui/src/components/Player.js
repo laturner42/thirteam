@@ -5,8 +5,7 @@ import PlacementIcon from './PlacementIcon';
 export default function Player(props) {
   const {
     playerHand,
-    currentTurn,
-    currentLeader,
+    gameData,
   } = props;
 
   const {
@@ -15,6 +14,12 @@ export default function Player(props) {
     player: name,
   } = playerHand;
 
+  const {
+    currentTurn,
+    currentLeader,
+  } = gameData;
+
+  const score = gameData.players[name].score;
   const myTurn = name === currentTurn;
 
   return (
@@ -38,6 +43,13 @@ export default function Player(props) {
           justifyContent: 'center',
         }}
       >
+        {
+          !!score && (
+            <Typography style={{ color: 'gold', fontSize: 12 }}>
+              {score}
+            </Typography>
+          )
+        }
         <Typography
           variant="h4"
           style={{

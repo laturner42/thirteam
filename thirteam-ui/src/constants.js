@@ -3,6 +3,7 @@ const MessageTypes = {
   START: 2,
   PLAY: 3,
   SKIP: 4,
+  NEW_ROUND: 5,
 };
 
 const Suits = {

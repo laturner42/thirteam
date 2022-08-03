@@ -97,8 +97,7 @@ export default function Game(props) {
       >
         <Player
           playerHand={gameData.hands[indexes[sixMans ? 2 : 1]]}
-          currentTurn={gameData.currentTurn}
-          currentLeader={gameData.currentLeader}
+          gameData={gameData}
         />
       </div>
 
@@ -120,15 +119,13 @@ export default function Game(props) {
         >
           <Player
             playerHand={gameData.hands[indexes[sixMans ? 1 : 0]]}
-            currentTurn={gameData.currentTurn}
-            currentLeader={gameData.currentLeader}
+            gameData={gameData}
           />
           {
             sixMans && (
               <Player
                 playerHand={gameData.hands[indexes[0]]}
-                currentTurn={gameData.currentTurn}
-                currentLeader={gameData.currentLeader}
+                gameData={gameData}
               />
             )
           }
@@ -173,15 +170,13 @@ export default function Game(props) {
         >
           <Player
             playerHand={gameData.hands[indexes[sixMans ? 3 : 2]]}
-            currentTurn={gameData.currentTurn}
-            currentLeader={gameData.currentLeader}
+            gameData={gameData}
           />
           {
             sixMans && (
               <Player
                 playerHand={gameData.hands[indexes[4]]}
-                currentTurn={gameData.currentTurn}
-                currentLeader={gameData.currentLeader}
+                gameData={gameData}
               />
             )
           }

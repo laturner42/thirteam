@@ -14,7 +14,7 @@ export default function WaitingRoom(props) {
 
   const startGame = () => {
     console.log('Starting game');
-    sendMessage(MessageTypes.START, { numPlayers, teamBased });
+    sendMessage(MessageTypes.START, { numPlayers, teamBased, reSortPlayers: true });
   }
 
   return (
@@ -44,6 +44,7 @@ export default function WaitingRoom(props) {
         >
           <Typography>Number of Players:</Typography>
           <Select
+            disabled={myName !== gameData.host}
             id="numPlayersSelect"
             value={numPlayers}
             onChange={(event) => setNumPlayers(parseInt(event.target.value, 10))}
@@ -73,7 +74,7 @@ export default function WaitingRoom(props) {
       </div>
       <Divider variant="middle" style={{ margin: 20 }} />
       {
-        myName === gameData.leader
+        myName === gameData.host
           ? (
             <div>
               <Button
@@ -94,7 +95,7 @@ export default function WaitingRoom(props) {
             </div>
           )
           : (
-            <Typography>Waiting on {gameData.leader} to start</Typography>
+            <Typography>Waiting on {gameData.host} to start</Typography>
           )
       }
     </div>

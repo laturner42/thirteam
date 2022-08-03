@@ -8,22 +8,92 @@ const {
   FaceValues,
 } = require('../thirteam-ui/src/constants');
 
+const rooms = {};
 const connections = {};
-const players = {};
 
-const generateNewGame = (opts) => {
+const checkAndEndRound = (gameState) => {
+  const numComplete = gameState.hands.filter(hand => !!hand.placement).length;
+  if (numComplete === gameState.hands.length - 1) {
+    gameState.gameOver = true;
+    gameState.hands.forEach((hand) => {
+      if (!hand.placement) {
+        hand.placement = gameState.hands.length;
+      }
+    })
+  } else if (gameState.opts.teamBased && numComplete === gameState.hand.length - 2) {
+    // Check if the two remaining players are on the same team
+    const remaining = gameState.hands
+      .map((hand, index) => ({ hand, index }))
+      .filter(({ hand }) => !hand.placement);
+    const difference = Math.abs(remaining[0].index - remaining[1].index);
+      // They are on the same team! Pity.
+    if (difference === 3) {
+      if (remaining[0].hand.hand.length >= remaining[1].hand.hand.length) {
+        gameState.hands[remaining[0].index].placement = 5;
+        gameState.hands[remaining[1].index].placement = 6;
+      } else {
+        gameState.hands[remaining[0].index].placement = 6;
+        gameState.hands[remaining[1].index].placement = 5;
+      }
+    }
+  }
+
+  if (!gameState.gameOver) return false;
+
+  let scoring;
+  if (gameState.hands.length === 4) {
+    scoring = {
+      1: 3,
+      2: 1,
+      3: -1,
+      4: -3,
+    }
+  } else {
+    scoring = {
+      1: 3,
+      2: 2,
+      3: 1,
+      4: -1,
+      5: -2,
+      6: -3,
+    }
+  }
+  gameState.hands.forEach((hand, i) => {
+    let score = scoring[hand.placement];
+    if (gameState.opts.teamBased) {
+      let teamIndex = i + 3;
+      if (teamIndex >= gameState.hands.length) teamIndex -= gameState.hands.length;
+      score += scoring[gameState.hands[teamIndex].placement];
+    }
+    gameState.players[hand.player].score += score;
+  })
+  return true;
+}
+
+const generateNewGame = (roomCode, opts, previousGameState = {}) => {
   const newGameState = {
-    players,
+    roomCode,
+    players: previousGameState.players || {},
+    host: previousGameState.host || null,
     currentLeader: null,
     lastPlay: null,
+    gameOver: false,
     currentTurn: '',
   };
   if (opts) {
+    newGameState.opts = opts;
     const {
       numPlayers,
       teamBased,
+      reSortPlayers,
     } = opts;
-    const playerNames = shuffleArrayInPlace(Object.keys(players).slice(0, numPlayers));
+    const { players } = newGameState;
+    let playerNames;
+    if (!reSortPlayers || !previousGameState.hands) {
+      playerNames = shuffleArrayInPlace(Object.keys(players).slice(0, numPlayers));
+    } else {
+      playerNames = previousGameState.hands.sort((a, b) => a.placement - b.placement).map(hand => hand.player);
+    }
     let remainingCards = getShuffledDeck(teamBased);
     const handSize = remainingCards.length / playerNames.length;
     const hands = [];
@@ -46,17 +116,19 @@ const generateNewGame = (opts) => {
   return newGameState;
 }
 
-let gameState = generateNewGame();
+const newRound = (previousGameState) => {
+  return generateNewGame(previousGameState.roomCode, previousGameState.opts, previousGameState);
+};
 
-const updateEveryone = async () => {
+const updateEveryone = async (gameState) => {
   return Promise.all(
-    Object.values(connections).map((connection) => {
+    Object.values(connections[gameState.roomCode]).map((connection) => {
       return connection.sendUTF(JSON.stringify(gameState));
     })
   )
 }
 
-const goNext = (player, foundPlayerIndex) => {
+const goNext = (gameState, player, foundPlayerIndex) => {
   const playerIndex = foundPlayerIndex ||
     gameState.hands.findIndex((hand) => hand.player === player);
   let nextIndex = playerIndex + 1;
@@ -69,14 +141,40 @@ const goNext = (player, foundPlayerIndex) => {
     gameState.currentLeader = null;
     // Last player to play is out, need to determine who starts next
     if (gameState.hands[nextIndex].hand.length === 0) {
-
+      let maxCardsIndex;
+      if (gameState.opts.teamBased) {
+        // The team with the highest number of remaining cards goes next
+        let bestScore = 0;
+        for (let i=0; i<3; i++) {
+          const total = gameState.hands[i].hand.length + gameState.hands[i+3].hand.length;
+          if (total > bestScore) {
+            maxCardsIndex = i;
+            bestScore = total;
+          }
+        }
+        // but the player ON that team with the most cards goes first.
+        if (gameState.hands[maxCardsIndex].hand.length < gameState.hands[maxCardsIndex+3].hand.length) {
+          maxCardsIndex += 3;
+        }
+      } else {
+        // Whichever individual with the most cards remaining goes next
+        let maxCards = 0;
+        for (let i=0; i<gameState.hands.length; i++) {
+          const { hand } = gameState.hands[i];
+          if (hand.length > maxCards) {
+            maxCards = hand.length;
+            maxCardsIndex = i;
+          }
+        }
+      }
+      gameState.currentTurn = gameState.hands[maxCardsIndex].player;
     }
   } else if (gameState.hands[nextIndex].hand.length === 0) {
-    goNext(gameState.currentTurn, nextIndex);
+    goNext(gameState, gameState.currentTurn, nextIndex);
   }
 }
 
-const playTrick = (player, trick) => {
+const playTrick = (gameState, player, trick) => {
   // Find and update the player's hand
   const playerIndex = gameState.hands.findIndex((hand) => hand.player === player);
   const hand = gameState.hands[playerIndex];
@@ -90,34 +188,52 @@ const playTrick = (player, trick) => {
     }
     return true;
   });
+  gameState.lastPlay = trick;
+  gameState.currentLeader = player;
   // Player is out, determine placement
   if (gameState.hands[playerIndex].hand.length === 0) {
     const currentlyFinished = gameState.hands.filter(hand => !!hand.placement).length;
     gameState.hands[playerIndex].placement = currentlyFinished + 1;
+    if (checkAndEndRound(gameState)) return;
   }
-  gameState.lastPlay = trick;
-  gameState.currentLeader = player;
-  goNext(player, playerIndex);
+  goNext(gameState, player, playerIndex);
 }
 
-const playerJoin = async (name) => {
-  if (!players[name]) {
-    players[name] = {
+const playerJoin = async (gameState, name) => {
+  if (!gameState.players[name]) {
+    gameState.players[name] = {
       name,
+      score: 0,
     }
   }
-  if (!gameState.leader) gameState.leader = name;
-  await updateEveryone();
+  if (!gameState.host) gameState.host = name;
+  await updateEveryone(gameState);
 };
 
 const parseMessage = async (packet, connection) => {
-  const { type, name, data } = packet;
+  const { type, name, roomCode: playerRoomCode, data } = packet;
 
-  connections[name] = connection;
+  let roomCode = playerRoomCode || data.roomCode;
 
-  if (!players[name]) {
+  if (!roomCode) {
+    roomCode = '';
+    const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    for (let i = 0; i < 4; i++) {
+      roomCode += letters[Math.floor(Math.random() * letters.length)];
+    }
+  }
+  if (!rooms[roomCode]) {
+    rooms[roomCode] = generateNewGame(roomCode);
+    connections[roomCode] = {};
+    rooms[roomCode].roomCode = roomCode;
+  }
+
+  const gameState = rooms[roomCode];
+  connections[roomCode][name] = connection;
+
+  if (!gameState.players[name]) {
     console.debug(name, 'has joined');
-    return await playerJoin(name);
+    return await playerJoin(gameState, name);
   }
 
   switch(type) {
@@ -125,23 +241,27 @@ const parseMessage = async (packet, connection) => {
       break;
     case MessageTypes.START:
       if (!gameState.hands) {
-        gameState = generateNewGame(data);
+        rooms[roomCode] = generateNewGame(roomCode, data, gameState);
       }
       break;
     case MessageTypes.PLAY:
       if (name !== gameState.currentTurn) return;
-      playTrick(name, data);
+      playTrick(gameState, name, data);
       break;
     case MessageTypes.SKIP:
       if (name !== gameState.currentTurn) return;
-      goNext(name);
+      goNext(gameState, name);
+      break;
+    case MessageTypes.NEW_ROUND:
+      if (!gameState.gameOver) return;
+      rooms[roomCode] = newRound(gameState);
       break;
     default:
       // Theoretically vulnerable to a logging attack ala log4shell
       console.error('Unknown message type', type, 'received');
       break;
   }
-  await updateEveryone();
+  await updateEveryone(rooms[roomCode]);
 }
 
 const httpServer = http.createServer();

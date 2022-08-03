@@ -19,11 +19,12 @@ export default function App() {
     JSON.stringify({
       name: myName,
       type,
+      roomCode: gameData ? gameData.roomCode : null,
       data,
     })
   );
 
-  const join = () => sendMessage(MessageTypes.JOIN);
+  const join = (roomCode) => sendMessage(MessageTypes.JOIN, { roomCode });
 
   const connect = () => {
     const url = 'ws://127.0.0.1:9898';
@@ -56,6 +57,19 @@ export default function App() {
     <ThemeProvider theme={darkTheme}>
       <div className="App">
         <div className="App-header">
+          {
+            gameData && (
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 10,
+                  top: 10,
+                }}
+              >
+                <span style={{ color: '#aaa' }}>Room code: {gameData.roomCode}</span>
+              </div>
+            )
+          }
           <Router {...routerProps} />
         </div>
       </div>
