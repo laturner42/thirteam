@@ -5,6 +5,7 @@ but with a team-based twist.
 
 ## Basic Rules
 
+Every player is dealt 13 cards.
 Whoever starts a round will play any trick out of their hand.
 A trick has one of the following patterns:
 
@@ -27,30 +28,37 @@ Suit order, from best to worst, is:
     ♣ Clubs
     ♠ Spades
 
-Instead of `2` being the worst card in the game, it is the best. Because of this,
-`2`s can only be played with other `2`s and cannot be part of a Run.
+`2`s are unique - instead of being the low card in the game, `2`s are the highest.
+Because of this, `2`s can only be played with other `2`s and cannot be part of a Run.
 
 If everyone after a player skips, that player "wins" the hand and gets to start
 the next round with a new trick. If that player is out of cards, the player
 with the most remaining cards begins the next trick.
 
-Since `2`s are the high card, `3♠` is the worst card.
+Since `2`s are the high card, `3♠` is the lowest card.
 Whoever, then, is dealt the `3♠` goes first to start the game.
 
 The first player to run out of cards wins, but the game is not over!
 Each player will earn (or lose!) points based on the order in which they go out.
 
-## Team Rules
+Scoring: 1st (+3) 2nd (+1) 3rd (-1) 4th (-3)
+
+## Six Player Variant
+
+In a six player game, each player starts with 9 cards instead of 13.
+Two Jokers (a Red Joker and a Black Joker, represented as '☆'s)
+are added to bring the total number of cards to 54.
+The Jokers are now the highest card in the game, better than `2`s.
+However, Jokers can _only_ be played solo - not as a pair, not as part of a run.
+`2`s can still only be played with other `2`s. The Red Joker can beat the Black Joker.
+
+Six-player Scoring: 1st (+3) 2nd (+2) 3rd (+1) 4th (-1) 5th (-2) 6th (-3)
+
+## Team Play
 
 _Team Play is still a work in progress and not yet functional_
 
 A team game can only be played with six players.
-
-In a six player game, each player starts with 9 cards instead of 13.
-Two Jokers (a Red joker and a Black joker) are added to bring the total number
-of cards to 54. The Jokers are now the highest card in the game, better than `2`s.
-However, Jokers can _only_ be played solo - not as a pair, not as part of a run.
-`2`s can still only be played with other `2`s. The Red Joker can beat the Black Joker.
 
 In a team game, before the game begins,
 each player gets one minute to memorize their hand.
@@ -61,10 +69,14 @@ gets to trade _one card_ from their new hand back to their original hand
 their teammate is trading before selecting a card to trade. Ideally, a player
 can use this opportunity to improve their teammate's hand.
 
-Once trades are complete, play continues as normal. When the game ends, however,
-each player earns the _sum_ of their team's scores.
+Once trades are complete, play continues as normal with the player with the `3♠`
+going first. When a round ends, however, each player earns the _sum_ of their team's scores.
 For example, if one teammate finishes first and earns 3 points, and the other
 teammate finishes fourth and loses 1 point, both teammates will finish with 2 points.
+
+After a game finishes, the teams change.
+Whoever finished first now pairs with whoever finished sixth,
+second pairs with fifth, and third pairs with fourth.
 
 ### Tips and Tricks
 

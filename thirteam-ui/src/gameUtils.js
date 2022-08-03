@@ -11,7 +11,7 @@ const sortCards = (cards) => (
 
 const getShuffledDeck = (includeJokers = false) => {
   const cards = [];
-  const cardsInSuit = includeJokers ? 14 : 13;
+  const cardsInSuit = 13
   const suitArray = [Suits.SPADES, Suits.CLUBS, Suits.DIAMONDS, Suits.HEARTS];
   for (let suit of suitArray) {
     for (let value=0; value<cardsInSuit; value++) {
@@ -20,6 +20,10 @@ const getShuffledDeck = (includeJokers = false) => {
         suit,
       })
     }
+  }
+  if (includeJokers) {
+    cards.push({ value: 13, suit: Suits.SPADES });
+    cards.push({ value: 13, suit: Suits.HEARTS });
   }
   return shuffleArrayInPlace(cards);
 }
