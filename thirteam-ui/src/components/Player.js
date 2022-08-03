@@ -6,6 +6,7 @@ export default function Player(props) {
   const {
     playerHand,
     gameData,
+    isMe,
   } = props;
 
   const {
@@ -27,10 +28,11 @@ export default function Player(props) {
       style={{
         display: 'flex',
         margin: 10,
-        width: 220,
-        height: 100,
+        minWidth: 220,
+        maxWidth: 320,
+        minHeight: isMe ? 0 : 100,
         flexDirection: 'column',
-        borderWidth: 5,
+        borderWidth: isMe ? 0 : 5,
         borderRadius: 10,
         borderStyle: 'solid',
         borderColor: myTurn ? '#dff' : '#888',
@@ -41,18 +43,29 @@ export default function Player(props) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          height: 40,
         }}
       >
         {
           !!score && (
-            <Typography style={{ color: 'gold', fontSize: 12 }}>
-              {score}
-            </Typography>
+            <div
+              style={{
+                height: '100%',
+                marginRight: 5,
+                // border: '1px solid red',
+              }}
+            >
+              <div style={{ marginTop: 3 }}>
+                <Typography style={{ color: 'gold', fontSize: 14, fontWeight: 'bold' }}>
+                  {score > 0 && '+'}{score}
+                </Typography>
+              </div>
+            </div>
           )
         }
         <Typography
-          variant="h4"
           style={{
+            fontSize: 30 - (Math.max(0, name.length - 7) * 5),
             fontWeight: 'bold',
             color: myTurn ? '#eef' : '#ddd',
           }}
@@ -71,48 +84,52 @@ export default function Player(props) {
           )
         }
       </div>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 5,
-        }}
-      >
-        {
-          Array.from(Array(hand.length)).map(() => (
-            <div
-              style={{
-                width: 20,
-                height: 40,
-                marginRight: -12,
-                backgroundColor: '#49e',
-                borderStyle: 'solid',
-                borderWidth: 2,
-                borderRadius: 3,
-                borderColor: '#ddd',
-              }}
-            />
-          ))
-        }
-        {
-          hand.length > 0
-            ? (
-              <div
-                style={{
-                  marginLeft: 22,
-                }}
-              >
-                <Typography style={{ fontWeight: 'bold' }}>
-                  {hand.length}
-                </Typography>
-              </div>
-            )
-            : (
-              <PlacementIcon placement={placement} />
-            )
-        }
-      </div>
+      {
+        !isMe && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 5,
+            }}
+          >
+            {
+              Array.from(Array(hand.length)).map(() => (
+                <div
+                  style={{
+                    width: 20,
+                    height: 40,
+                    marginRight: -12,
+                    backgroundColor: '#49e',
+                    borderStyle: 'solid',
+                    borderWidth: 2,
+                    borderRadius: 3,
+                    borderColor: '#ddd',
+                  }}
+                />
+              ))
+            }
+            {
+              hand.length > 0
+                ? (
+                  <div
+                    style={{
+                      marginLeft: 22,
+                    }}
+                  >
+                    <Typography style={{ fontWeight: 'bold' }}>
+                      {hand.length}
+                    </Typography>
+                  </div>
+                )
+                : (
+                  <PlacementIcon placement={placement} />
+                )
+            }
+          </div>
+        )
+      }
     </div>
   )
 }

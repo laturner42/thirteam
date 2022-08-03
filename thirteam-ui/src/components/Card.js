@@ -7,6 +7,7 @@ export default function Card(props) {
     suit,
     selectCard,
     selectedCards,
+    myTurn
   } = props;
 
   const [selected, setSelected] = useState(false);
@@ -42,6 +43,11 @@ export default function Card(props) {
     [Suits.HEARTS]: 'red',
   }[suit];
 
+  let backgroundColor = '#bbb';
+  if (myTurn) {
+    backgroundColor = selected ? '#aef': '#eee';
+  }
+
   return (
     <div
       key={`card-${value}-${suit}`}
@@ -52,7 +58,7 @@ export default function Card(props) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: selected ? '#aef': '#eee',
+        backgroundColor,
         borderColor: '#666',
         borderRadius: 10,
         borderWidth: 2,

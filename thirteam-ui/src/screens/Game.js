@@ -155,6 +155,7 @@ export default function Game(props) {
                   key={`played-card-${value}-${suit}`}
                   value={value}
                   suit={suit}
+                  myTurn
                 />
               ))
           }
@@ -205,6 +206,7 @@ export default function Game(props) {
                 suit={suit}
                 selectedCards={selectedCards}
                 selectCard={selectCard}
+                myTurn={myTurn}
               />
             ))
           }
@@ -226,25 +228,31 @@ export default function Game(props) {
               justifyContent: 'center',
             }}
           >
-            <Typography variant="h4">{myName}</Typography>
-            {
-              gameData.currentLeader === myName && (
-                <LeaderIcon style={{ marginLeft: 10, color: 'gold', fontSize: 30 }} />
-              )
-            }
-            {
-              !!myHand.placement && (
-                <PlacementIcon placement={myHand.placement} />
-              )
-            }
+            <Player
+              playerHand={myHand}
+              gameData={gameData}
+              isMe
+            />
           </div>
-          <Button
-            disabled={!canPlayTrick()}
-            onClick={playTrick}
-            variant="contained"
-          >
-            Play
-          </Button>
+          {
+            !gameData.gameOver || gameData.host !== myName
+              ? (
+                <Button
+                  disabled={!canPlayTrick()}
+                  onClick={playTrick}
+                  variant="contained"
+                >
+                  Play
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => sendMessage(MessageTypes.NEW_ROUND)}
+                  variant="outlined"
+                >
+                  Next Round
+                </Button>
+              )
+          }
           <Button
             disabled={!myTurn || !gameData.lastPlay}
             onClick={skipTurn}
