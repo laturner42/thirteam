@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
 import { MessageTypes } from './constants';
-import Game from './screens/Game';
+import Router from './Router';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 export default function App() {
   const [socket, setSocket] = useState(null);
@@ -19,20 +26,21 @@ export default function App() {
   const join = () => sendMessage(MessageTypes.JOIN);
 
   const connect = () => {
-    console.debug('Connecting...');
+    const url = 'ws://127.0.0.1:9898';
+    console.log(`Connecting to ${url}`);
     // TODO: don't hardcode this
-    const ws = new WebSocket('ws://127.0.0.1:9898');
-    ws.open = () => {
-      console.debug('Connected');
+    const ws = new WebSocket(url);
+    ws.onopen = () => {
+      console.log('Connected');
       setSocket(ws);
-      if (myName && gameData && gameData.players.map(p => p.name).includes(myName)) {
+      if (myName && gameData && Object.keys(gameData.players).map(p => p.name).includes(myName)) {
         join();
       }
     }
     ws.onmessage = (e) => setGameData(JSON.parse(e.data));
     ws.onclose = (e) => {
       setSocket(null);
-      console.error(e);
+      console.error('Lost connection', e);
     }
   };
 
@@ -42,13 +50,15 @@ export default function App() {
     }
   }, [socket]);
 
-  const basicProps = { gameData, sendMessage, myName };
+  const routerProps = { join, setMyName, gameData, sendMessage, myName };
 
   return (
-    <div className="App">
-      <div className="App-header">
-        <Game {...basicProps} />
+    <ThemeProvider theme={darkTheme}>
+      <div className="App">
+        <div className="App-header">
+          <Router {...routerProps} />
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }

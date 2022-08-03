@@ -12,6 +12,7 @@ export default function Card(props) {
   const [selected, setSelected] = useState(false);
 
   useEffect(() => {
+    if (!selectedCards) return;
     let found = false;
     for (let i=0; i<selectedCards.length; i++) {
       const card = selectedCards[i];
@@ -46,21 +47,24 @@ export default function Card(props) {
       key={`card-${value}-${suit}`}
       style={{
         color,
-        cursor: 'pointer',
+        cursor: selectCard ? 'pointer' : undefined,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: selected ? '#aaa': '#eee',
+        backgroundColor: selected ? '#aef': '#eee',
         borderColor: '#666',
         borderRadius: 10,
         borderWidth: 2,
         borderStyle: 'solid',
         width: 50,
         height: 100,
-        fontSize: 40
+        fontSize: 40,
+        margin: 1,
+        marginTop: selected ? 0 : 10,
+        marginBottom: selected ? 20 : 10,
       }}
-      onClick={() => selectCard(value, suit)}
+      onClick={() => selectCard ? selectCard(value, suit) : null}
     >
       <div>{faceValue}</div><div>{icon}</div>
     </div>
