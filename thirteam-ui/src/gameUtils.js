@@ -50,7 +50,7 @@ const getPattern = (unsortedCards) => {
   let isRun = true;
   for (let i=1; i<cards.length; i++) {
     const myValue = cards[i].value;
-    if (myValue !== firstValue) {
+    if (myValue !== firstValue || myValue === FaceValues.Joker) {
       allSame = false;
     }
     if (myValue !== cards[i-1].value + 1 || myValue >= FaceValues.Two) {
