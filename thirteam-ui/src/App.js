@@ -28,7 +28,7 @@ export default function App() {
 
   const connect = () => {
     // TODO: don't hardcode this
-    const url = 'ws://192.168.4.36:9898';
+    const url = 'ws://127.0.0.1:9898';
     console.log(`Connecting to ${url}`);
     const ws = new WebSocket(url);
     ws.onopen = () => {
