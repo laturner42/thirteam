@@ -16,7 +16,7 @@ export default function Game(props) {
 
   // the 'hands' index to place at the bottom of the screen
   let bottomIndex = gameData.hands.findIndex((hand) => hand.player === myName);
-  const iAmPlaying = bottomIndex >= 0;
+  const iAmPlaying = bottomIndex !== -1;
   if (!iAmPlaying) {
     bottomIndex = 0;
   }

@@ -11,10 +11,11 @@ export default function WaitingRoom(props) {
 
   const [numPlayers, setNumPlayers] = useState(4);
   const [teamBased, setTeamBased] = useState(false);
+  const [reSortPlayers, setReSortPlayers] = useState(true);
 
   const startGame = () => {
     console.log('Starting game');
-    sendMessage(MessageTypes.START, { numPlayers, teamBased, reSortPlayers: true });
+    sendMessage(MessageTypes.START, { numPlayers, teamBased, reSortPlayers });
   }
 
   return (
@@ -72,6 +73,20 @@ export default function WaitingRoom(props) {
             style={{ marginLeft: 10 }}
             checked={teamBased}
             onChange={() => setTeamBased(!teamBased)}
+          />
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Typography>Reseat Players:</Typography>
+          <Checkbox
+            disabled={myName !== gameData.host}
+            style={{ marginLeft: 10 }}
+            checked={reSortPlayers}
+            onChange={() => setReSortPlayers(!reSortPlayers)}
           />
         </div>
       </div>

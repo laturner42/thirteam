@@ -51,7 +51,6 @@ export default function Player(props) {
             style={{
               height: '100%',
               marginRight: 5,
-              // border: '1px solid red',
             }}
           >
             <div style={{ marginTop: 3 }}>

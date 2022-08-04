@@ -21,6 +21,7 @@ export default function MyHand(props) {
 
   const canPlayTrick = () => {
     if (!myTurn || gameData.gameOver) return false;
+
     const myPattern = getPattern(selectedCards);
     if (myPattern.pattern === Patterns.None) return false;
     if (!gameData.lastPlay) return true;
@@ -28,6 +29,7 @@ export default function MyHand(props) {
     const leadingPattern = getPattern(gameData.lastPlay);
     if (leadingPattern.pattern !== myPattern.pattern) return false;
     if (leadingPattern.value !== myPattern.value) return false;
+
     const { suit: leadingSuit, value: leadingValue } = leadingPattern.highCard;
     const { suit: mySuit, value: myValue } = myPattern.highCard;
     if (leadingValue > myValue) return false;
@@ -63,6 +65,8 @@ export default function MyHand(props) {
     setSelectedCards(sortCards(newSelectedCards));
   }
 
+  let pendingPregame = false;
+
   const getActionButton = () => {
     if (gameData.gameOver && gameData.host === myName) {
       return (
@@ -76,6 +80,7 @@ export default function MyHand(props) {
     }
     if (!gameData.currentTurn) {
       if (!myHand.readyToSwap || !teamHand.readyToSwap) {
+        pendingPregame = !myHand.readyToSwap;
         return (
           <Button
             disabled={myHand.readyToSwap}
@@ -87,6 +92,7 @@ export default function MyHand(props) {
         )
       }
       if (!teamHand.pendingCard) {
+        pendingPregame = !teamHand.pendingCard;
         return (
           <Button
             disabled={!!teamHand.pendingCard || selectedCards.length !== 1}
@@ -136,7 +142,7 @@ export default function MyHand(props) {
               suit={suit}
               selectedCards={selectedCards}
               selectCard={selectCard}
-              myTurn={myTurn}
+              myTurn={myTurn || pendingPregame}
             />
           ))
         }
