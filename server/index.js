@@ -6,6 +6,7 @@ const {
   MessageTypes,
   Suits,
   FaceValues,
+  SeatingMethods,
 } = require('../thirteam-ui/src/constants');
 
 const rooms = {};
@@ -85,17 +86,39 @@ const generateNewGame = (roomCode, opts, previousGameState = {}) => {
     const {
       numPlayers,
       teamBased,
-      reSortPlayers,
+      reseatMethod,
     } = opts;
     const { players } = newGameState;
     let playerNames;
-    if (!reSortPlayers || !previousGameState.hands) {
-      console.log('Random order');
+    if (reseatMethod === SeatingMethods.None) {
+      console.log('Keeping default order');
+      playerNames = Object.keys(players).slice(0, numPlayers);
+    } else if (!previousGameState.hands || reseatMethod === SeatingMethods.Shuffle) {
+      console.log('Shuffling');
       playerNames = shuffleArrayInPlace(Object.keys(players).slice(0, numPlayers));
-    } else {
-      console.log('Matchup order');
+    } else if (SeatingMethods === SeatingMethods.PairUp) {
+      console.log('Pair up');
       playerNames = [...previousGameState.hands].sort((a, b) => a.placement - b.placement).map(hand => hand.player);
+    } else {
+      const totalNumPlayers = Object.keys(players).length;
+      const needToSwap = Math.min(totalNumPlayers - numPlayers, numPlayers);
+      let compFunc;
+      if (SeatingMethods === SeatingMethods.SwapTop) {
+        console.log('Swapping Top');
+        compFunc = (a, b) => a.placement - b.placement;
+      } else {
+        console.log('Swapping Bottom');
+        compFunc = (a, b) => b.placement - a.placement;
+      }
+      const toSwapOut = [...previousGameState.hands]
+        .sort(compFunc)
+        .map(hand => hand.player)
+        .slice(0, needToSwap);
+      playerNames = shuffleArrayInPlace(
+        Object.keys(players).filter(name => !toSwapOut.includes(name)).slice(0, numPlayers)
+      );
     }
+    console.log('Player order:', playerNames);
     const remainingCards = getShuffledDeck(numPlayers === 6);
     const handSize = remainingCards.length / playerNames.length;
     const hands = [];
@@ -283,6 +306,9 @@ const parseMessage = async (packet, connection) => {
 
   switch(type) {
     case MessageTypes.JOIN:
+      break;
+    case MessageTypes.CHANGE_OPTS:
+      gameState.opts = data;
       break;
     case MessageTypes.START:
       if (!gameState.hands) {

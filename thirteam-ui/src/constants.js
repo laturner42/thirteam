@@ -6,6 +6,7 @@ const MessageTypes = {
   NEW_ROUND: 5,
   READY_TO_SWAP: 6,
   SWAP_CARD: 7,
+  CHANGE_OPTS: 8,
 };
 
 const Suits = {
@@ -30,9 +31,18 @@ const Patterns = {
   Run: 'Run',
 };
 
+const SeatingMethods = {
+  None: 'Unchanging',
+  Shuffle: 'Shuffle',
+  PairUp: 'Pair Up',
+  SwapBottom: 'Swap Bottom',
+  SwapTop: 'Swap Top',
+}
+
 module.exports = {
   MessageTypes,
   Suits,
   FaceValues,
   Patterns,
+  SeatingMethods,
 };

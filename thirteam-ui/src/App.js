@@ -52,6 +52,7 @@ export default function App() {
   }, [socket]);
 
   const routerProps = { join, setMyName, gameData, sendMessage, myName };
+  const numSpectators = Object.keys(gameData.players).length - gameData.opts.numPlayers;
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -64,9 +65,19 @@ export default function App() {
                   position: 'absolute',
                   left: 10,
                   top: 10,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
                 }}
               >
                 <span style={{ color: '#aaa' }}>Room code: {gameData.roomCode}</span>
+                <span style={{ color: '#aaa', fontSize: 20 }}>Seating: {gameData.opts.reseatMethod}</span>
+                <span style={{ color: '#aaa', fontSize: 20 }}>Teams: {gameData.opts.teamBased ? 'On' : 'Off'}</span>
+                {
+                  numSpectators > 0 && (
+                    <span style={{ color: '#aaa', fontSize: 20 }}>Spectators: {Object.keys(gameData.players).length - gameData.opts.numPlayers}</span>
+                  )
+                }
               </div>
             )
           }

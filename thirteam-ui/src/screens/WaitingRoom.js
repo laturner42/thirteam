@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { MessageTypes } from '../constants';
+import { useEffect, useState } from 'react';
+import { MessageTypes, SeatingMethods } from '../constants';
 import { Button, Divider, Typography, Checkbox, Select, MenuItem } from '@mui/material';
 
 export default function WaitingRoom(props) {
@@ -11,12 +11,26 @@ export default function WaitingRoom(props) {
 
   const [numPlayers, setNumPlayers] = useState(4);
   const [teamBased, setTeamBased] = useState(false);
-  const [reSortPlayers, setReSortPlayers] = useState(true);
+  const [reseatMethod, setReseatMethod] = useState(SeatingMethods.PairUp);
 
-  const startGame = () => {
-    console.log('Starting game');
-    sendMessage(MessageTypes.START, { numPlayers, teamBased, reSortPlayers });
+  const iAmHost = myName === gameData.host;
+
+  useEffect(() => {
+    if (!gameData.opts) return;
+    setNumPlayers(gameData.opts.numPlayers);
+    setTeamBased(gameData.opts.teamBased);
+    setReseatMethod(gameData.opts.reseatMethod);
+  }, [gameData])
+
+  const updateGameOpts = (startGame) => {
+    sendMessage(startGame === false ? MessageTypes.CHANGE_OPTS : MessageTypes.START, { numPlayers, teamBased, reseatMethod });
   }
+
+  useEffect(() => {
+    console.log('updating everyone');
+    if (!iAmHost) return;
+    updateGameOpts(false);
+  }, [iAmHost, numPlayers, teamBased, reseatMethod]);
 
   return (
     <div>
@@ -45,7 +59,7 @@ export default function WaitingRoom(props) {
         >
           <Typography>Number of Players:</Typography>
           <Select
-            disabled={myName !== gameData.host}
+            disabled={!iAmHost}
             id="numPlayersSelect"
             value={numPlayers}
             onChange={(event) => {
@@ -69,7 +83,7 @@ export default function WaitingRoom(props) {
         >
           <Typography>Team Game:</Typography>
           <Checkbox
-            disabled={myName !== gameData.host || numPlayers !== 6}
+            disabled={!iAmHost || numPlayers !== 6}
             style={{ marginLeft: 10 }}
             checked={teamBased}
             onChange={() => setTeamBased(!teamBased)}
@@ -81,13 +95,23 @@ export default function WaitingRoom(props) {
             alignItems: 'center',
           }}
         >
-          <Typography>Reseat Players:</Typography>
-          <Checkbox
-            disabled={myName !== gameData.host}
-            style={{ marginLeft: 10 }}
-            checked={reSortPlayers}
-            onChange={() => setReSortPlayers(!reSortPlayers)}
-          />
+          <Typography>Reseat Method:</Typography>
+          <Select
+            disabled={!iAmHost}
+            id="reseatMethod"
+            value={reseatMethod}
+            onChange={(event) => setReseatMethod(event.target.value)}
+            style={{
+              height: 30,
+              marginLeft: 20,
+            }}
+          >
+            <MenuItem value={SeatingMethods.None}>Never Change Seats</MenuItem>
+            <MenuItem value={SeatingMethods.PairUp}>Pair Up Best & Worst</MenuItem>
+            <MenuItem value={SeatingMethods.Shuffle}>Shuffle Active Players</MenuItem>
+            <MenuItem value={SeatingMethods.SwapBottom}>Bottom Players Swap Out</MenuItem>
+            <MenuItem value={SeatingMethods.SwapTop}>Top Players Swap Out</MenuItem>
+          </Select>
         </div>
       </div>
       <Divider variant="middle" style={{ margin: 20 }} />
@@ -97,7 +121,7 @@ export default function WaitingRoom(props) {
             <div>
               <Button
                 disabled={Object.keys(gameData.players).length < numPlayers}
-                onClick={startGame}
+                onClick={updateGameOpts}
                 variant="outlined"
                 style={{ marginBottom: 10 }}
               >

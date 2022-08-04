@@ -92,8 +92,9 @@ export default function Player(props) {
             }}
           >
             {
-              Array.from(Array(hand.length)).map(() => (
+              Array.from(Array(hand.length)).map((i, j) => (
                 <div
+                  key={`player-${name}-card-${j}`}
                   style={{
                     width: 20,
                     height: 40,

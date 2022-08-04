@@ -52,6 +52,7 @@ export default function Card(props) {
     <div
       key={`card-${value}-${suit}`}
       style={{
+        userSelect: 'none',
         color,
         cursor: selectCard ? 'pointer' : undefined,
         display: 'flex',
