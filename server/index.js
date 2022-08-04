@@ -1,7 +1,7 @@
 const http = require('http');
 const { server: WebSocketServer } = require('websocket');
 const { shuffleArrayInPlace } = require('../thirteam-ui/src/utils');
-const { getShuffledDeck, sortCards } = require('../thirteam-ui/src/gameUtils');
+const { getShuffledDeck, sortCards, getTeammateIndex } = require('../thirteam-ui/src/gameUtils');
 const {
   MessageTypes,
   Suits,
@@ -90,11 +90,13 @@ const generateNewGame = (roomCode, opts, previousGameState = {}) => {
     const { players } = newGameState;
     let playerNames;
     if (!reSortPlayers || !previousGameState.hands) {
+      console.log('Random order');
       playerNames = shuffleArrayInPlace(Object.keys(players).slice(0, numPlayers));
     } else {
-      playerNames = previousGameState.hands.sort((a, b) => a.placement - b.placement).map(hand => hand.player);
+      console.log('Matchup order');
+      playerNames = [...previousGameState.hands].sort((a, b) => a.placement - b.placement).map(hand => hand.player);
     }
-    let remainingCards = getShuffledDeck(numPlayers === 6);
+    const remainingCards = getShuffledDeck(numPlayers === 6);
     const handSize = remainingCards.length / playerNames.length;
     const hands = [];
     let playFirst = null
@@ -103,6 +105,8 @@ const generateNewGame = (roomCode, opts, previousGameState = {}) => {
         hand: sortCards(remainingCards.splice(0, handSize)),
         player,
         placement: null,
+        pendingCard: null,
+        readyToSwap: false,
       };
       if (newHand.hand.some((card) => card.suit === Suits.SPADES && card.value === FaceValues.Three)) {
         playFirst = player;
@@ -110,7 +114,9 @@ const generateNewGame = (roomCode, opts, previousGameState = {}) => {
       hands.push(newHand);
     }
     newGameState.hands = hands;
-    newGameState.currentTurn = playFirst;
+    if (!teamBased) {
+      newGameState.currentTurn = playFirst;
+    }
   }
   console.log('Starting new game!', newGameState);
   return newGameState;
@@ -210,6 +216,45 @@ const playerJoin = async (gameState, name) => {
   await updateEveryone(gameState);
 };
 
+const swapCard = (gameState, player, card) => {
+  const playerIndex = gameState.hands.findIndex(hand => hand.player === player);
+  const myHand = gameState.hands[playerIndex];
+  const teamIndex = getTeammateIndex(gameState, player);
+  const teamHand = gameState.hands[teamIndex];
+
+  if (teamHand.pendingCard) return;
+  teamHand.pendingCard = card;
+  const cardIndex = myHand.hand.findIndex(({ value, suit }) => value === card.value && suit === card.suit);
+  myHand.hand.splice(cardIndex, 1);
+
+  if (!myHand.pendingCard) return;
+  myHand.hand = sortCards([...myHand.hand, myHand.pendingCard]);
+  teamHand.hand = sortCards([...teamHand.hand, teamHand.pendingCard]);
+
+  const notReady = gameState.hands.filter((hand) => !hand.pendingCard);
+  if (notReady.length === 0) {
+    gameState.currentTurn = gameState.hands
+      .filter(hand => hand.hand.some((card) => card.suit === Suits.SPADES && card.value === FaceValues.Three))
+      [0].player;
+  }
+}
+
+const swapHands = (gameState, player) => {
+  const playerIndex = gameState.hands.findIndex(hand => hand.player === player);
+  const myHand = gameState.hands[playerIndex];
+  if (myHand.readyToSwap) return;
+  myHand.readyToSwap = true;
+  const teamIndex = getTeammateIndex(gameState, player);
+  const teamHand = gameState.hands[teamIndex];
+  if (!teamHand.readyToSwap) return;
+
+  const myCards = myHand.hand;
+  const teamCards = teamHand.hand;
+
+  teamHand.hand = myCards;
+  myHand.hand = teamCards;
+}
+
 const parseMessage = async (packet, connection) => {
   const { type, name, roomCode: playerRoomCode, data } = packet;
 
@@ -255,6 +300,12 @@ const parseMessage = async (packet, connection) => {
     case MessageTypes.NEW_ROUND:
       if (!gameState.gameOver) return;
       rooms[roomCode] = newRound(gameState);
+      break;
+    case MessageTypes.READY_TO_SWAP:
+      swapHands(gameState, name);
+      break;
+    case MessageTypes.SWAP_CARD:
+      swapCard(gameState, name, data);
       break;
     default:
       // Theoretically vulnerable to a logging attack ala log4shell

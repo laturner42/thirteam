@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MessageTypes } from '../constants';
-import { Button, Divider, Typography, Checkbox, Select, MenuItem, Tooltip } from '@mui/material';
+import { Button, Divider, Typography, Checkbox, Select, MenuItem } from '@mui/material';
 
 export default function WaitingRoom(props) {
   const {
@@ -47,7 +47,10 @@ export default function WaitingRoom(props) {
             disabled={myName !== gameData.host}
             id="numPlayersSelect"
             value={numPlayers}
-            onChange={(event) => setNumPlayers(parseInt(event.target.value, 10))}
+            onChange={(event) => {
+              setNumPlayers(parseInt(event.target.value, 10));
+              setTeamBased(false);
+            }}
             style={{
               height: 30,
               marginLeft: 20,
@@ -65,7 +68,7 @@ export default function WaitingRoom(props) {
         >
           <Typography>Team Game:</Typography>
           <Checkbox
-            disabled
+            disabled={myName !== gameData.host || numPlayers !== 6}
             style={{ marginLeft: 10 }}
             checked={teamBased}
             onChange={() => setTeamBased(!teamBased)}

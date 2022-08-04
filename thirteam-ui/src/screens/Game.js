@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Card from '../components/Card';
 import { MessageTypes, Patterns } from '../constants';
-import { getPattern, sortCards } from '../gameUtils';
+import { getPattern, getTeammateIndex, sortCards } from '../gameUtils';
 import Player from '../components/Player';
 import { Button } from '@mui/material';
 import PlacementIcon from '../components/PlacementIcon';
@@ -73,7 +73,57 @@ export default function Game(props) {
   }
 
   const myHand = gameData.hands[myIndex];
+  const teamHand = gameData.hands[getTeammateIndex(gameData, myName)];
   const sixMans = gameData.opts.numPlayers === 6;
+
+  const getActionButton = () => {
+    if (gameData.gameOver && gameData.host === myName) {
+      return (
+        <Button
+          onClick={() => sendMessage(MessageTypes.NEW_ROUND)}
+          variant="outlined"
+        >
+          Next Round
+        </Button>
+      )
+    }
+    if (!gameData.currentTurn) {
+      if (!myHand.readyToSwap || !teamHand.readyToSwap) {
+        return (
+          <Button
+            disabled={myHand.readyToSwap}
+            onClick={() => sendMessage(MessageTypes.READY_TO_SWAP)}
+            variant="outlined"
+          >
+            Swap Hand
+          </Button>
+        )
+      }
+      if (!teamHand.pendingCard) {
+        return (
+          <Button
+            disabled={!!teamHand.pendingCard || selectedCards.length !== 1}
+            onClick={() => {
+              sendMessage(MessageTypes.SWAP_CARD, selectedCards[0])
+              setSelectedCards([]);
+            }}
+            variant="contained"
+          >
+            Trade Card
+          </Button>
+        )
+      }
+    }
+    return (
+      <Button
+        disabled={!canPlayTrick()}
+        onClick={playTrick}
+        variant="contained"
+      >
+        Play
+      </Button>
+    )
+  }
 
   return (
     <div
@@ -243,25 +293,7 @@ export default function Game(props) {
               isMe
             />
           </div>
-          {
-            !gameData.gameOver || gameData.host !== myName
-              ? (
-                <Button
-                  disabled={!canPlayTrick()}
-                  onClick={playTrick}
-                  variant="contained"
-                >
-                  Play
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => sendMessage(MessageTypes.NEW_ROUND)}
-                  variant="outlined"
-                >
-                  Next Round
-                </Button>
-              )
-          }
+          { getActionButton() }
           <Button
             disabled={!myTurn || !gameData.lastPlay || gameData.gameOver}
             onClick={skipTurn}

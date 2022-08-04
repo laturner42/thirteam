@@ -4,6 +4,8 @@ const MessageTypes = {
   PLAY: 3,
   SKIP: 4,
   NEW_ROUND: 5,
+  READY_TO_SWAP: 6,
+  SWAP_CARD: 7,
 };
 
 const Suits = {

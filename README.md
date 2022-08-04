@@ -62,9 +62,7 @@ However, Jokers can _only_ be played solo - not as a pair, not as part of a run.
 
 ## Team Play
 
-_Team Play is still a work in progress and not yet functional_
-
-A team game can only be played with six players.
+_Note: A team game can only be played with six players._
 
 In a team game, before the game begins,
 each player gets one minute to memorize their hand.

@@ -9,6 +9,13 @@ const sortCards = (cards) => (
   })
 )
 
+const getTeammateIndex = (gameState, player) => {
+  let index = gameState.hands.findIndex(hand => hand.player === player);
+  index += 3;
+  if (index >= gameState.hands.length) index -= gameState.hands.length;
+  return index;
+}
+
 const getShuffledDeck = (includeJokers = false) => {
   const cards = [];
   const cardsInSuit = 13
@@ -84,6 +91,7 @@ const getPattern = (unsortedCards) => {
 }
 
 module.exports = {
+  getTeammateIndex,
   getPattern,
   sortCards,
   getShuffledDeck,
