@@ -91,8 +91,8 @@ const getPattern = (unsortedCards) => {
 }
 
 module.exports = {
-  getTeammateIndex,
   getPattern,
   sortCards,
   getShuffledDeck,
+  getTeammateIndex,
 };

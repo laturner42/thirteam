@@ -52,14 +52,14 @@ export default function App() {
   }, [socket]);
 
   const routerProps = { join, setMyName, gameData, sendMessage, myName };
-  const numSpectators = Object.keys(gameData.players).length - gameData.opts.numPlayers;
+  const numSpectators = gameData && gameData.opts ? Object.keys(gameData.players).length - gameData.opts.numPlayers : 0;
 
   return (
     <ThemeProvider theme={darkTheme}>
       <div className="App">
         <div className="App-header">
           {
-            gameData && (
+            gameData && gameData.opts && (
               <div
                 style={{
                   position: 'absolute',

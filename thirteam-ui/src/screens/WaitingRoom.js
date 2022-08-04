@@ -27,7 +27,6 @@ export default function WaitingRoom(props) {
   }
 
   useEffect(() => {
-    console.log('updating everyone');
     if (!iAmHost) return;
     updateGameOpts(false);
   }, [iAmHost, numPlayers, teamBased, reseatMethod]);
