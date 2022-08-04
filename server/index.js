@@ -94,7 +94,7 @@ const generateNewGame = (roomCode, opts, previousGameState = {}) => {
     } else {
       playerNames = previousGameState.hands.sort((a, b) => a.placement - b.placement).map(hand => hand.player);
     }
-    let remainingCards = getShuffledDeck(teamBased);
+    let remainingCards = getShuffledDeck(numPlayers === 6);
     const handSize = remainingCards.length / playerNames.length;
     const hands = [];
     let playFirst = null
@@ -116,8 +116,8 @@ const generateNewGame = (roomCode, opts, previousGameState = {}) => {
   return newGameState;
 }
 
-const newRound = (previousGameState) => {
-  return generateNewGame(previousGameState.roomCode, previousGameState.opts, previousGameState);
+const newRound = (gameState) => {
+  return generateNewGame(gameState.roomCode, gameState.opts, gameState);
 };
 
 const updateEveryone = async (gameState) => {

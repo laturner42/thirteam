@@ -3,8 +3,7 @@ import Card from '../components/Card';
 import { MessageTypes, Patterns } from '../constants';
 import { getPattern, sortCards } from '../gameUtils';
 import Player from '../components/Player';
-import { Button, Typography } from '@mui/material';
-import { Stars as LeaderIcon } from '@mui/icons-material';
+import { Button } from '@mui/material';
 import PlacementIcon from '../components/PlacementIcon';
 
 export default function Game(props) {
@@ -19,7 +18,7 @@ export default function Game(props) {
   const myTurn = gameData.currentTurn === myName;
 
   const canPlayTrick = () => {
-    if (!myTurn) return false;
+    if (!myTurn || gameData.gameOver) return false;
     const myPattern = getPattern(selectedCards);
     if (myPattern.pattern === Patterns.None) return false;
     if (!gameData.lastPlay) return true;
@@ -74,7 +73,7 @@ export default function Game(props) {
   }
 
   const myHand = gameData.hands[myIndex];
-  const sixMans = gameData.numPlayers === 6;
+  const sixMans = gameData.opts.numPlayers === 6;
 
   return (
     <div
@@ -101,42 +100,40 @@ export default function Game(props) {
         />
       </div>
 
-      {/* Middle bar */}
+      {/* Middle top bar */}
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}
       >
-        {/* Middle left */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'space-around'
-          }}
-        >
-          <Player
-            playerHand={gameData.hands[indexes[sixMans ? 1 : 0]]}
-            gameData={gameData}
-          />
-          {
-            sixMans && (
-              <Player
-                playerHand={gameData.hands[indexes[0]]}
-                gameData={gameData}
-              />
-            )
-          }
-        </div>
+        <Player
+          playerHand={gameData.hands[indexes[sixMans ? 1 : 0]]}
+          gameData={gameData}
+        />
+        <Player
+          playerHand={gameData.hands[indexes[sixMans ? 3 : 2]]}
+          gameData={gameData}
+        />
+      </div>
 
-        {/* Last Played Hand */}
+      {/* Last Played Hand */}
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
         <div
           style={{
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: 130,
             minWidth: 70,
             maxWidth: 500,
             margin: 20,
@@ -150,39 +147,45 @@ export default function Game(props) {
         >
           {
             !!gameData.lastPlay &&
-              gameData.lastPlay.map(({ value, suit }) => (
-                <Card
-                  key={`played-card-${value}-${suit}`}
-                  value={value}
-                  suit={suit}
-                  myTurn
-                />
-              ))
-          }
-        </div>
-        {/* Middle right */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'space-around'
-          }}
-        >
-          <Player
-            playerHand={gameData.hands[indexes[sixMans ? 3 : 2]]}
-            gameData={gameData}
-          />
-          {
-            sixMans && (
-              <Player
-                playerHand={gameData.hands[indexes[4]]}
-                gameData={gameData}
+            gameData.lastPlay.map(({ value, suit }) => (
+              <Card
+                key={`played-card-${value}-${suit}`}
+                value={value}
+                suit={suit}
+                myTurn
               />
-            )
+            ))
           }
         </div>
       </div>
+
+      {/* Middle bottom bar */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
+      >
+        {
+          sixMans && (
+            <Player
+              playerHand={gameData.hands[indexes[0]]}
+              gameData={gameData}
+            />
+          )
+        }
+        {
+          sixMans && (
+            <Player
+              playerHand={gameData.hands[indexes[4]]}
+              gameData={gameData}
+            />
+          )
+        }
+      </div>
+
       {/* Player Hand */}
       <div
         style={{
@@ -191,6 +194,7 @@ export default function Game(props) {
           alignItems: 'center',
         }}
       >
+        <div />
         <div
           style={{
             display: 'flex',
@@ -209,6 +213,11 @@ export default function Game(props) {
                 myTurn={myTurn}
               />
             ))
+          }
+          {
+            myHand.placement && (
+              <PlacementIcon placement={myHand.placement} size={40} />
+            )
           }
         </div>
         <div
@@ -254,7 +263,7 @@ export default function Game(props) {
               )
           }
           <Button
-            disabled={!myTurn || !gameData.lastPlay}
+            disabled={!myTurn || !gameData.lastPlay || gameData.gameOver}
             onClick={skipTurn}
             variant="outlined"
           >

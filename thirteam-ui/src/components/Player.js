@@ -47,21 +47,19 @@ export default function Player(props) {
         }}
       >
         {
-          !!score && (
-            <div
-              style={{
-                height: '100%',
-                marginRight: 5,
-                // border: '1px solid red',
-              }}
-            >
-              <div style={{ marginTop: 3 }}>
-                <Typography style={{ color: 'gold', fontSize: 14, fontWeight: 'bold' }}>
-                  {score > 0 && '+'}{score}
-                </Typography>
-              </div>
+          <div
+            style={{
+              height: '100%',
+              marginRight: 5,
+              // border: '1px solid red',
+            }}
+          >
+            <div style={{ marginTop: 3 }}>
+              <Typography style={{ color: 'gold', fontSize: 14, fontWeight: 'bold' }}>
+                {score >= 0 && '+'}{score}
+              </Typography>
             </div>
-          )
+          </div>
         }
         <Typography
           style={{

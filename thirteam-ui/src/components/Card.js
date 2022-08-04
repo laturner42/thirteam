@@ -43,7 +43,7 @@ export default function Card(props) {
     [Suits.HEARTS]: 'red',
   }[suit];
 
-  let backgroundColor = '#bbb';
+  let backgroundColor = '#999';
   if (myTurn) {
     backgroundColor = selected ? '#aef': '#eee';
   }
