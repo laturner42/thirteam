@@ -3,6 +3,8 @@
 Four or six player card game based on the original game "thirteen",
 but with a team-based twist.
 
+Game is hosted at http://thirteam.lauraandvictoria.com
+
 ## Basic Rules
 
 The base game requires four players. Each player is dealt 13 cards.
