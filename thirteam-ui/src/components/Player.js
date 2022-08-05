@@ -62,7 +62,7 @@ export default function Player(props) {
         }
         <Typography
           style={{
-            fontSize: 30 - (Math.max(0, name.length - 7) * 5),
+            fontSize: 30 - (Math.max(0, name.length - 7) * 3),
             fontWeight: 'bold',
             color: myTurn ? '#eef' : '#ddd',
           }}

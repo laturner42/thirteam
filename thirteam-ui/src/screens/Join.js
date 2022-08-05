@@ -6,6 +6,9 @@ import {
   Typography,
   Divider,
 } from '@mui/material';
+import {
+  GitHub
+} from '@mui/icons-material';
 
 export default function Join(props) {
   const {
@@ -75,6 +78,17 @@ export default function Join(props) {
           Create Room
         </Button>
       </Card>
+      <div style={{ margin: 15 }}>
+        <a
+          style={{
+            color: '#eee',
+          }}
+          href="https://github.com/laturner42/thirteam"
+          target="_blank"
+        >
+          <GitHub style={{ fontSize: 30 }} />
+        </a>
+      </div>
     </div>
   )
 }

@@ -180,6 +180,7 @@ export default function MyHand(props) {
           disabled={!myTurn || !gameData.lastPlay || gameData.gameOver}
           onClick={skipTurn}
           variant="outlined"
+          style={{ marginTop: 15 }}
         >
           Skip
         </Button>

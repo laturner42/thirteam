@@ -21,14 +21,15 @@ const checkAndEndRound = (gameState) => {
         hand.placement = gameState.hands.length;
       }
     })
-  } else if (gameState.opts.teamBased && numComplete === gameState.hand.length - 2) {
+  } else if (gameState.opts.teamBased && numComplete === gameState.hands.length - 2) {
     // Check if the two remaining players are on the same team
     const remaining = gameState.hands
       .map((hand, index) => ({ hand, index }))
       .filter(({ hand }) => !hand.placement);
     const difference = Math.abs(remaining[0].index - remaining[1].index);
-      // They are on the same team! Pity.
+    // They are on the same team! Pity.
     if (difference === 3) {
+      // hand.hand isn't a typo :(
       if (remaining[0].hand.hand.length >= remaining[1].hand.hand.length) {
         gameState.hands[remaining[0].index].placement = 5;
         gameState.hands[remaining[1].index].placement = 6;
@@ -96,14 +97,14 @@ const generateNewGame = (roomCode, opts, previousGameState = {}) => {
     } else if (!previousGameState.hands || reseatMethod === SeatingMethods.Shuffle) {
       console.log('Shuffling');
       playerNames = shuffleArrayInPlace(Object.keys(players).slice(0, numPlayers));
-    } else if (SeatingMethods === SeatingMethods.PairUp) {
+    } else if (reseatMethod === SeatingMethods.PairUp) {
       console.log('Pair up');
       playerNames = [...previousGameState.hands].sort((a, b) => a.placement - b.placement).map(hand => hand.player);
     } else {
       const totalNumPlayers = Object.keys(players).length;
       const needToSwap = Math.min(totalNumPlayers - numPlayers, numPlayers);
       let compFunc;
-      if (SeatingMethods === SeatingMethods.SwapTop) {
+      if (reseatMethod === SeatingMethods.SwapTop) {
         console.log('Swapping Top');
         compFunc = (a, b) => a.placement - b.placement;
       } else {

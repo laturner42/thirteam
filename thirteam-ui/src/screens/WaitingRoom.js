@@ -36,7 +36,7 @@ export default function WaitingRoom(props) {
       <div>
         {
           Object.keys(gameData.players).map((player) => (
-            <Typography style={{ color: player === myName ? '#bbf' : '#eee' }}>
+            <Typography key={player} variant="h5" style={{ color: player === myName ? '#bbf' : '#eee' }}>
               {player}
             </Typography>
           ))
