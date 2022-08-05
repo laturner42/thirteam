@@ -27,7 +27,6 @@ export default function App() {
   const join = (roomCode) => sendMessage(MessageTypes.JOIN, { roomCode });
 
   const connect = () => {
-    // TODO: don't hardcode this
     const url = 'ws://thirteam.lauraandvictoria.com:9898';
     console.log(`Connecting to ${url}`);
     const ws = new WebSocket(url);
@@ -35,7 +34,7 @@ export default function App() {
       console.log('Connected');
       setSocket(ws);
       if (myName && gameData && Object.keys(gameData.players).map(p => p.name).includes(myName)) {
-        join();
+        join(gameData.roomCode);
       }
     }
     ws.onmessage = (e) => setGameData(JSON.parse(e.data));
@@ -51,36 +50,49 @@ export default function App() {
     }
   }, [socket]);
 
-  const routerProps = { join, setMyName, gameData, sendMessage, myName };
+  const routerProps = { join, setMyName, gameData, sendMessage, myName, socket };
   const numSpectators = gameData && gameData.opts ? Object.keys(gameData.players).length - gameData.opts.numPlayers : 0;
 
   return (
     <ThemeProvider theme={darkTheme}>
       <div className="App">
         <div className="App-header">
-          {
-            gameData && gameData.opts && (
-              <div
-                style={{
-                  position: 'absolute',
-                  left: 10,
-                  top: 10,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                }}
-              >
-                <span style={{ color: '#aaa' }}>Room code: {gameData.roomCode}</span>
-                <span style={{ color: '#aaa', fontSize: 20 }}>Seating: {gameData.opts.reseatMethod}</span>
-                <span style={{ color: '#aaa', fontSize: 20 }}>Teams: {gameData.opts.teamBased ? 'On' : 'Off'}</span>
-                {
-                  numSpectators > 0 && (
-                    <span style={{ color: '#aaa', fontSize: 20 }}>Spectators: {Object.keys(gameData.players).length - gameData.opts.numPlayers}</span>
-                  )
-                }
-              </div>
-            )
-          }
+          <div
+            style={{
+              position: 'absolute',
+              left: 10,
+              top: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+            }}
+          >
+            {
+              gameData && gameData.opts && (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                  }}
+                >
+                  <span style={{ color: '#aaa' }}>Room code: {gameData.roomCode}</span>
+                  <span style={{ color: '#aaa', fontSize: 20 }}>Seating: {gameData.opts.reseatMethod}</span>
+                  <span style={{ color: '#aaa', fontSize: 20 }}>Teams: {gameData.opts.teamBased ? 'On' : 'Off'}</span>
+                  {
+                    numSpectators > 0 && (
+                      <span style={{ color: '#aaa', fontSize: 20 }}>Spectators: {Object.keys(gameData.players).length - gameData.opts.numPlayers}</span>
+                    )
+                  }
+                </div>
+              )
+            }
+            {
+              !socket && (
+                <span style={{ color: '#e99', fontSize: 18, }}>Connecting...</span>
+              )
+            }
+          </div>
           <Router {...routerProps} />
         </div>
       </div>

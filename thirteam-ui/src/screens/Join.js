@@ -14,7 +14,8 @@ export default function Join(props) {
   const {
     join,
     myName,
-    setMyName
+    setMyName,
+    connected,
   } = props;
 
   const [roomCode, setRoomCode] = useState('');
@@ -65,7 +66,7 @@ export default function Join(props) {
           />
           <Button
             onClick={() => join(roomCode)}
-            disabled={!myName || !roomCode}
+            disabled={!myName || !roomCode || !connected}
           >
             Join
           </Button>
@@ -73,7 +74,7 @@ export default function Join(props) {
         <Divider variant="middle" style={{ margin: 20 }} />
         <Button
           onClick={() => join()}
-          disabled={!myName}
+          disabled={!myName || !connected}
         >
           Create Room
         </Button>
