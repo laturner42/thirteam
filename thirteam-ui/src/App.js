@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
-import { MessageTypes } from './constants';
+import { MessageTypes } from './utilities/constants.js';
 import Router from './Router';
 
 const darkTheme = createTheme({

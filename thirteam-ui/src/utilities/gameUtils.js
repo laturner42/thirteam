@@ -1,7 +1,7 @@
-const { FaceValues, Patterns, Suits } = require('./constants');
-const { shuffleArrayInPlace } = require('./utils');
+import { FaceValues, Patterns, Suits } from './constants.js';
+import { shuffleArrayInPlace } from './utils.js';
 
-const sortCards = (cards) => (
+export const sortCards = (cards) => (
   [...cards]
     .sort((a, b) => {
     if (a.value !== b.value) return a.value - b.value;
@@ -9,14 +9,14 @@ const sortCards = (cards) => (
   })
 )
 
-const getTeammateIndex = (gameState, player) => {
+export const getTeammateIndex = (gameState, player) => {
   let index = gameState.hands.findIndex(hand => hand.player === player);
   index += 3;
   if (index >= gameState.hands.length) index -= gameState.hands.length;
   return index;
 }
 
-const getShuffledDeck = (includeJokers = false) => {
+export const getShuffledDeck = (includeJokers = false) => {
   const cards = [];
   const cardsInSuit = 13
   const suitArray = [Suits.SPADES, Suits.CLUBS, Suits.DIAMONDS, Suits.HEARTS];
@@ -36,7 +36,7 @@ const getShuffledDeck = (includeJokers = false) => {
 }
 
 // This could be optimized a bit
-const getPattern = (unsortedCards) => {
+export const getPattern = (unsortedCards) => {
   if (unsortedCards.length === 0) {
     return {
       pattern: Patterns.None,
@@ -89,10 +89,3 @@ const getPattern = (unsortedCards) => {
     highCard: null,
   };
 }
-
-module.exports = {
-  getPattern,
-  sortCards,
-  getShuffledDeck,
-  getTeammateIndex,
-};

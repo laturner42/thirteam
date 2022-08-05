@@ -1,13 +1,13 @@
-const http = require('http');
-const { server: WebSocketServer } = require('websocket');
-const { shuffleArrayInPlace } = require('../thirteam-ui/src/utils');
-const { getShuffledDeck, sortCards, getTeammateIndex } = require('../thirteam-ui/src/gameUtils');
-const {
+import http from 'http';
+import { server as WebSocketServer } from 'websocket';
+import { shuffleArrayInPlace } from '../thirteam-ui/src/utilities/utils.js';
+import { getShuffledDeck, sortCards, getTeammateIndex } from '../thirteam-ui/src/utilities/gameUtils.js';
+import {
   MessageTypes,
   Suits,
   FaceValues,
   SeatingMethods,
-} = require('../thirteam-ui/src/constants');
+} from '../thirteam-ui/src/utilities/constants.js';
 
 const rooms = {};
 const connections = {};

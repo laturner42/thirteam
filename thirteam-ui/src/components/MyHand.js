@@ -3,8 +3,8 @@ import Card from './Card';
 import PlacementIcon from './PlacementIcon';
 import Player from './Player';
 import { Button } from '@mui/material';
-import { getPattern, getTeammateIndex, sortCards } from '../gameUtils';
-import { MessageTypes, Patterns } from '../constants';
+import { getPattern, getTeammateIndex, sortCards } from '../utilities/gameUtils.js';
+import { MessageTypes, Patterns } from '../utilities/constants.js';
 
 export default function MyHand(props) {
   const {

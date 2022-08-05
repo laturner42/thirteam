@@ -1,4 +1,4 @@
-const MessageTypes = {
+export const MessageTypes = {
   JOIN: 1,
   START: 2,
   PLAY: 3,
@@ -9,20 +9,20 @@ const MessageTypes = {
   CHANGE_OPTS: 8,
 };
 
-const Suits = {
+export const Suits = {
   SPADES: 1,
   CLUBS: 2,
   DIAMONDS: 3,
   HEARTS: 4,
 };
 
-const FaceValues = {
+export const FaceValues = {
   Three: 0,
   Two: 12,
   Joker: 13,
 };
 
-const Patterns = {
+export const Patterns = {
   None: 'None',
   Single: 'Solo',
   Pair: 'Pair',
@@ -31,18 +31,10 @@ const Patterns = {
   Run: 'Run',
 };
 
-const SeatingMethods = {
+export const SeatingMethods = {
   None: 'Unchanging',
   Shuffle: 'Shuffle',
   PairUp: 'Pair Up',
   SwapBottom: 'Swap Bottom',
   SwapTop: 'Swap Top',
 }
-
-module.exports = {
-  MessageTypes,
-  Suits,
-  FaceValues,
-  Patterns,
-  SeatingMethods,
-};

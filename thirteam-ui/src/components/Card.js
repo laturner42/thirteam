@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Suits } from '../constants';
+import { Suits } from '../utilities/constants.js';
 
 export default function Card(props) {
   const {

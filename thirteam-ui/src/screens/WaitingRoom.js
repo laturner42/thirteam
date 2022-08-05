@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MessageTypes, SeatingMethods } from '../constants';
+import { MessageTypes, SeatingMethods } from '../utilities/constants.js';
 import { Button, Divider, Typography, Checkbox, Select, MenuItem } from '@mui/material';
 
 export default function WaitingRoom(props) {
