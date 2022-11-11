@@ -1,8 +1,17 @@
+import { useState, useEffect } from 'react';
 import Card from '../components/Card';
 import Player from '../components/Player';
 import MyHand from '../components/MyHand';
 
 export default function Game(props) {
+  const [blink, setBlink] = useState(true);
+  
+  useEffect(() => {
+    setInterval(() => {
+      setBlink(!blink);
+    }, 1000);
+  }, []);
+  
   const {
     myName,
     gameData,
@@ -92,7 +101,7 @@ export default function Game(props) {
             borderRadius: 20,
             borderWidth: 5,
             borderStyle: 'solid',
-            borderColor: '#8cf',
+            borderColor: blink && gameData.currentTurn === myName ? '#8cf' : '#799',
             paddingLeft: 15,
             paddingRight: 15,
           }}
