@@ -7,10 +7,10 @@ export default function Game(props) {
   const [blink, setBlink] = useState(true);
   
   useEffect(() => {
-    setInterval(() => {
+    setTimeout(() => {
       setBlink(!blink);
     }, 1000);
-  }, []);
+  }, [blink]);
   
   const {
     myName,
