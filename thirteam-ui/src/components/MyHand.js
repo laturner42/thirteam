@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Card from './Card';
 import PlacementIcon from './PlacementIcon';
 import Player from './Player';
@@ -18,6 +18,12 @@ export default function MyHand(props) {
   const myIndex = gameData.hands.findIndex((hand) => hand.player === myName);
   const myHand = gameData.hands[myIndex];
   const teamHand = gameData.hands[getTeammateIndex(gameData, myName)];
+  
+  useEffect(() => {
+    if (gameData.gameOver) {
+      setSelectedCards([]);
+    }
+  }, [gameData]);
 
   const canPlayTrick = () => {
     if (!myTurn || gameData.gameOver) return false;
@@ -48,6 +54,7 @@ export default function MyHand(props) {
   }
 
   const selectCard = (value, suit) => {
+    if (gameData.gameOver) return;
     const newSelectedCards = [...selectedCards];
     let found = -1;
     for (let i=0; i<selectedCards.length; i++) {
@@ -68,7 +75,7 @@ export default function MyHand(props) {
   let pendingPregame = false;
 
   const getActionButton = () => {
-    if (gameData.gameOver && gameData.host === myName) {
+    if (gameData.gameOver) {
       return (
         <Button
           onClick={() => sendMessage(MessageTypes.NEW_ROUND)}
