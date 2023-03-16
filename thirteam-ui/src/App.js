@@ -11,7 +11,7 @@ const darkTheme = createTheme({
 });
 
 export default function App() {
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState(undefined);
   const [gameData, setGameData] = useState(null);
   const [myName, setMyName] = useState('');
 
@@ -92,7 +92,7 @@ export default function App() {
             }
             {
               !socket && (
-                <span style={{ color: '#e99', fontSize: 18, }}>Connecting...</span>
+                <span style={{ color: socket === null ? '#e99' : '#777', fontSize: 18, }}>Connecting...</span>
               )
             }
           </div>
