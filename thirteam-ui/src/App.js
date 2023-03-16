@@ -27,8 +27,10 @@ export default function App() {
   const join = (roomCode) => sendMessage(MessageTypes.JOIN, { roomCode });
 
   const connect = () => {
-    // const url = 'wss://thirteam-server-kseyi6yvpa-ue.a.run.app:443';
-    const url = 'ws://localhost:9898';
+    const url =
+      window.location.href.includes('localhost') ? 'ws://localhost:9898' :
+      'wss://thirteam-server-kseyi6yvpa-ue.a.run.app:443';
+
     console.log(`Connecting to ${url}`);
     const ws = new WebSocket(url);
     ws.onopen = () => {
