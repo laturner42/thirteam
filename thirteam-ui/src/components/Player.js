@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import Card from './Card';
 import { Stars as LeaderIcon } from '@mui/icons-material';
 import PlacementIcon from './PlacementIcon';
 
@@ -7,6 +8,7 @@ export default function Player(props) {
     playerHand,
     gameData,
     isMe,
+    spectating,
   } = props;
 
   const {
@@ -29,7 +31,7 @@ export default function Player(props) {
         display: 'flex',
         margin: 10,
         minWidth: 220,
-        maxWidth: 320,
+        maxWidth: 420,
         minHeight: isMe ? 0 : 100,
         flexDirection: 'column',
         borderWidth: isMe ? 0 : 5,
@@ -89,37 +91,51 @@ export default function Player(props) {
               alignItems: 'center',
               justifyContent: 'center',
               marginTop: 5,
+              marginLeft: 10,
+              marginRight: 10,
             }}
           >
             {
-              Array.from(Array(hand.length)).map((i, j) => (
-                <div
-                  key={`player-${name}-card-${j}`}
-                  style={{
-                    width: 20,
-                    height: 40,
-                    marginRight: -12,
-                    backgroundColor: '#49e',
-                    borderStyle: 'solid',
-                    borderWidth: 2,
-                    borderRadius: 3,
-                    borderColor: '#ddd',
-                  }}
-                />
+              hand.map((card, j) => (
+                spectating ? (
+                  <Card
+                    key={`player-${name}-card-${j}`}
+                    value={card.value}
+                    suit={card.suit}
+                    myTurn={false}
+                    small
+                  />
+                ) : (
+                  <div
+                    key={`player-${name}-card-${j}`}
+                    style={{
+                      width: 20,
+                      height: 40,
+                      marginRight: -12,
+                      backgroundColor: '#49e',
+                      borderStyle: 'solid',
+                      borderWidth: 2,
+                      borderRadius: 3,
+                      borderColor: '#ddd',
+                    }}
+                  />
+                )
               ))
             }
             {
               hand.length > 0
                 ? (
-                  <div
-                    style={{
-                      marginLeft: 22,
-                    }}
-                  >
-                    <Typography style={{ fontWeight: 'bold' }}>
-                      {hand.length}
-                    </Typography>
-                  </div>
+                  spectating ? null : (
+                    <div
+                      style={{
+                        marginLeft: 22,
+                      }}
+                    >
+                      <Typography style={{ fontWeight: 'bold' }}>
+                        {hand.length}
+                      </Typography>
+                    </div>
+                  )
                 )
                 : (
                   <PlacementIcon placement={placement} />

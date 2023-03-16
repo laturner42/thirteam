@@ -27,7 +27,8 @@ export default function App() {
   const join = (roomCode) => sendMessage(MessageTypes.JOIN, { roomCode });
 
   const connect = () => {
-    const url = 'ws://thirteam.lauraandvictoria.com:9898';
+    // const url = 'wss://thirteam-server-kseyi6yvpa-ue.a.run.app:443';
+    const url = 'ws://localhost:9898';
     console.log(`Connecting to ${url}`);
     const ws = new WebSocket(url);
     ws.onopen = () => {
@@ -45,7 +46,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (!socket) {
+    if (!socket && connect) {
       setTimeout(connect, 1000);
     }
   }, [socket]);

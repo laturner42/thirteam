@@ -131,6 +131,8 @@ export default function MyHand(props) {
         display: 'flex',
         justifyContent: 'space-evenly',
         alignItems: 'center',
+        marginLeft: 10,
+        marginRight: 10,
       }}
     >
       <div />

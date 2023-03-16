@@ -39,7 +39,9 @@ export default function Game(props) {
   return (
     <div
       style={{
-        width: 1024,
+        width: '100%',
+        maxWidth: 1280,
+        minWidth: 768,
         height: 768,
         display: 'flex',
         flexDirection: 'column',
@@ -58,6 +60,7 @@ export default function Game(props) {
         <Player
           playerHand={gameData.hands[indexes[sixMans ? 2 : 1]]}
           gameData={gameData}
+          spectating={!iAmPlaying}
         />
       </div>
 
@@ -73,10 +76,12 @@ export default function Game(props) {
         <Player
           playerHand={gameData.hands[indexes[sixMans ? 1 : 0]]}
           gameData={gameData}
+          spectating={!iAmPlaying}
         />
         <Player
           playerHand={gameData.hands[indexes[sixMans ? 3 : 2]]}
           gameData={gameData}
+          spectating={!iAmPlaying}
         />
       </div>
 
@@ -134,6 +139,7 @@ export default function Game(props) {
             <Player
               playerHand={gameData.hands[indexes[0]]}
               gameData={gameData}
+              spectating={!iAmPlaying}
             />
           )
         }
@@ -142,6 +148,7 @@ export default function Game(props) {
             <Player
               playerHand={gameData.hands[indexes[4]]}
               gameData={gameData}
+              spectating={!iAmPlaying}
             />
           )
         }
@@ -165,6 +172,7 @@ export default function Game(props) {
               <Player
                 playerHand={gameData.hands[0]}
                 gameData={gameData}
+                spectating={!iAmPlaying}
               />
             </div>
           )

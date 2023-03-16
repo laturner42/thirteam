@@ -1,13 +1,32 @@
 import { useState, useEffect } from 'react';
 import { Suits } from '../utilities/constants.js';
 
+const faceValues = [
+  '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', '2', '☆'
+];
+
+const suitIcons = {
+  [Suits.SPADES]: '♠',
+  [Suits.CLUBS]: '♣',
+  [Suits.DIAMONDS]: '♦',
+  [Suits.HEARTS]: '♥',
+};
+
+const suitColors = {
+  [Suits.SPADES]: 'black',
+  [Suits.CLUBS]: 'black',
+  [Suits.DIAMONDS]: 'red',
+  [Suits.HEARTS]: 'red',
+};
+
 export default function Card(props) {
   const {
     value,
     suit,
     selectCard,
     selectedCards,
-    myTurn
+    myTurn,
+    small,
   } = props;
 
   const [selected, setSelected] = useState(false);
@@ -25,27 +44,15 @@ export default function Card(props) {
     setSelected(found);
   }, [selectedCards, value, suit]);
 
-  const faceValue = [
-    '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', '2', '☆'
-  ][value];
-
-  const icon = {
-    [Suits.SPADES]: '♠',
-    [Suits.CLUBS]: '♣',
-    [Suits.DIAMONDS]: '♦',
-    [Suits.HEARTS]: '♥',
-  }[suit];
-
-  const color = {
-    [Suits.SPADES]: 'black',
-    [Suits.CLUBS]: 'black',
-    [Suits.DIAMONDS]: 'red',
-    [Suits.HEARTS]: 'red',
-  }[suit];
+  const faceValue = faceValues[value];
+  const icon = suitIcons[suit];
+  const color = suitColors[suit];
 
   let backgroundColor = '#999';
   if (myTurn) {
     backgroundColor = selected ? '#aef': '#eee';
+  } else if (small) {
+    backgroundColor = '#ccc';
   }
 
   return (
@@ -61,14 +68,16 @@ export default function Card(props) {
         justifyContent: 'center',
         backgroundColor,
         borderColor: '#666',
-        borderRadius: 10,
+        borderRadius: small ? 5 : 10,
         borderWidth: 2,
         borderStyle: 'solid',
-        width: 50,
-        height: 100,
-        fontSize: 40,
+        minWidth: small ? 20 : 50,
+        maxWidth: small ? 20 : 50,
+        overflow: 'hidden',
+        height: small ? 50 : 100,
+        fontSize: small ? 20 : 40,
         margin: 1,
-        marginTop: selected ? 0 : 10,
+        marginTop: selected || !selectCard ? 0 : 10,
         marginBottom: selected ? 20 : 10,
       }}
       onClick={() => selectCard ? selectCard(value, suit) : null}

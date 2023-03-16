@@ -343,8 +343,8 @@ const parseMessage = async (packet, connection) => {
 }
 
 const httpServer = http.createServer();
-const WS_PORT = process.env.WS_PORT || 9898;
-httpServer.listen(WS_PORT, () => console.log(`Websocket listening on port ${WS_PORT}`));
+const PORT = process.env.PORT || 9898;
+httpServer.listen(PORT, () => console.log(`Websocket listening on port ${PORT}`));
 const wsServer = new WebSocketServer({ httpServer });
 wsServer.on('request', (request) => {
   console.debug('New connection');

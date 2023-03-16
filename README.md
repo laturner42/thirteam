@@ -3,7 +3,7 @@
 Four or six player card game based on the original game "thirteen",
 but with a team-based twist.
 
-Game is hosted at http://thirteam.lauraandvictoria.com
+Game is hosted at https://thirteam.lauraandvictoria.com
 
 ## Basic Rules
 
